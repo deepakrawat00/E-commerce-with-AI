@@ -9,7 +9,11 @@ const config = {
     DB_NAME: process.env.DB_NAME,
     DB_PORT: process.env.DB_PORT,
 
-    API_VERSION: process.env.API_VERSION
+    API_VERSION: process.env.API_VERSION,
+
+    CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
+    CLOUDINARY_KEY: process.env.CLOUDINARY_KEY,
+    CLOUDINARY_SECRET: process.env.CLOUDINARY_SECRET,
 }
 
 export default config;

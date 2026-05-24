@@ -5,8 +5,8 @@ export const createTables = async () => {
         CREATE TABLE IF NOT EXISTS images (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
+            public_id VARCHAR(255) NOT NULL,
             url VARCHAR(500) NOT NULL,
-            alt_text VARCHAR(255),
 
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
