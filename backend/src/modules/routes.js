@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import imageRoutues from './images/image.routes.js';
 import config from '../config/env.config.js';
+import userRoutes from './users/user.routes.js';
 
 const routes = Router();
 const api = '/api/' + config.API_VERSION;
@@ -13,5 +14,6 @@ routes.get('/', (req, res) => {
 })
 
 routes.use(api + '/images', imageRoutues);
+routes.use(api + '/users', userRoutes);
 
 export default routes;

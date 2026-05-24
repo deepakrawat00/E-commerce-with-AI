@@ -1,7 +1,6 @@
-
 import fs from 'fs';
 import { replaceOnCloud, uploadOnCloud } from "../../utils/cloudinary.js";
-import { createImage, deleteImage, getImages, getImageUsingID, replaceImages } from "./image.db.js";
+import { createImage, deleteImage, getImages, getImageUsingID, replaceImages } from "./image.query.js";
 import { AppError } from '../../utils/AppError.js';
 
 export const uploadImageService = async (files) => {
@@ -55,14 +54,14 @@ export const replaceImageService = async (id, file) => {
 
     if (!id || isNaN(id)) throw new AppError('Invalid image ID', 400);
 
-    const getImages = await getImageUsingID(id);
-    if (!getImages) throw new AppError('Images not found', 404);
+    const findImage = await getImageUsingID(id);
+    if (!findImage) throw new AppError('Images not found', 404);
 
-    const cloud_response = await replaceOnCloud(path, getImages.public_id);
+    const cloud_response = await replaceOnCloud(path, findImage.public_id);
 
     if (!cloud_response) throw new AppError('Failed to upload on cloud', 502);
 
-    const updatedImages = await replaceImages(getImages.id, originalname, cloud_response.public_id, cloud_response.secure_url)
+    const updatedImages = await replaceImages(findImage.id, originalname, cloud_response.public_id, cloud_response.secure_url)
     if (!updatedImages) throw new AppError('Failed to update image', 500)
     return updatedImages;
 }
