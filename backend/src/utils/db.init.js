@@ -19,10 +19,17 @@ export const createTables = async () => {
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
             email VARCHAR(150) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL,
+
+            password VARCHAR(255) NULL,
+
             role ENUM('admin','user') DEFAULT 'user',
             is_suspend BOOLEAN DEFAULT FALSE, 
             image_id INT,
+
+            auth_provider ENUM('local','google','facebook') DEFAULT 'local',
+            google_id VARCHAR(255) NULL UNIQUE,
+            facebook_id VARCHAR(255) NULL UNIQUE,
+            is_verified BOOLEAN DEFAULT FALSE,
 
             FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE SET NULL,
 

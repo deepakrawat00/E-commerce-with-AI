@@ -10,6 +10,7 @@ const config = {
     DB_PORT: process.env.DB_PORT,
 
     API_VERSION: process.env.API_VERSION,
+    SALT: process.env.SALT,
 
     CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
     CLOUDINARY_KEY: process.env.CLOUDINARY_KEY,
