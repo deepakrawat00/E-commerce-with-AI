@@ -374,4 +374,16 @@ export const createTables = async () => {
         )        
     `);
     console.log('Payments table ready');
+
+    await connectDB.execute(`
+        CREATE TABLE IF NOT EXISTS blacklist_token (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            token TEXT NOT NULL,
+            UNIQUE (token),
+
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+    `)
+    console.log("Blacklist token table ready");
 }

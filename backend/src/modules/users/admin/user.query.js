@@ -1,11 +1,11 @@
-import connectDB from "../../config/db.js";
+import connectDB from "../../../config/db.js";
 
 export const existingEmail = async (email) => {
     const [row] = await connectDB.execute(
         `SELECT email FROM users WHERE email = ?`,
         [email]
     );
-    return row[0];
+    return row[0] || null;
 }
 
 export const createUser = async (name, email, password) => {
@@ -65,4 +65,30 @@ export const getuserbyIdQuery = async (id) => {
         is_suspend: user.is_suspend === 1,
         is_verified: user.is_verified === 1
     }
+}
+
+export const updateByAdminQuery = async (id, role, is_suspend) => {
+    const fields = [];
+    const values = [];
+    const suspend_value = is_suspend === true ? 1 : 0;
+    if (role !== undefined) {
+        fields.push('role=?');
+        values.push(role)
+    }
+    if (is_suspend !== undefined) {
+        fields.push('is_suspend=?');
+        values.push(is_suspend);
+    }
+    if (fields.length === 0) {
+        return false;
+    }
+
+    values.push(id);
+
+    const [result] = await connectDB.execute(
+        `UPDATE users SET ${fields.join(', ')} WHERE id=?`,
+        values
+    );
+
+    return result.affectedRows > 0;
 }

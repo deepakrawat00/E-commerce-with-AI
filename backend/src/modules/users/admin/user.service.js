@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import config from '../../config/env.config.js';
-import { AppError } from '../../utils/AppError.js';
-import { checkId, createUser, deleteUserQuery, existingEmail, getAllUsersQuery, getuserbyIdQuery } from './user.query.js';
+import config from '../../../config/env.config.js';
+import { AppError } from '../../../utils/AppError.js';
+import { checkId, createUser, deleteUserQuery, existingEmail, getAllUsersQuery, getuserbyIdQuery, updateByAdminQuery } from './user.query.js';
 
 export const getUserServices = async () => {
     const users = await getAllUsersQuery();
@@ -38,6 +38,16 @@ export const deleteUsers = async (id) => {
 
     const delete_user = await deleteUserQuery(id);
     if (!delete_user) throw new AppError('Failed to delete user', 500);
+
+    return null;
+}
+
+export const updateUserServices = async (id, role, is_suspend) => {
+    const existId = await checkId(id);
+    if (!existId) throw new AppError('User not found', 404);
+
+    const updateUser = await updateByAdminQuery(id, role, is_suspend);
+    if (!updateUser) throw new AppError('Failed to update user', 500);
 
     return null;
 }
