@@ -33,7 +33,8 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const token = await loginService(email, password);
+
+        const token = await loginService(email.toLowerCase(), password);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -59,7 +60,7 @@ export const login = async (req, res) => {
     }
 }
 
-export const logout = async (req, res) => {
+export const logout = async (req, res, next) => {
     try {
         const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
         const result = await logoutService(token);
