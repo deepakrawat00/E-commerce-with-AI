@@ -10,7 +10,7 @@ const api = '/api/' + config.API_VERSION;
 routes.get('/', (req, res) => {
     res.status(200).json({
         status: true,
-        message: "Base route"
+        message: "Server is running"
     })
 })
 

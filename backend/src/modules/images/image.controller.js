@@ -9,13 +9,7 @@ export const getAllImage = async (req, res) => {
             data: result
         })
     } catch (error) {
-        console.log("Error on get Image" + error);
-
-        const statusCode = error.statusCode || 500
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || 'Internal server error'
-        })
+        next(error);
     }
 }
 
@@ -31,13 +25,7 @@ export const getImageByID = async (req, res) => {
             data: result
         })
     } catch (error) {
-        console.log("Error on get Image" + error.message);
-
-        const statusCode = error.statusCode || 500
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || 'Internal server error'
-        })
+        next(error);
     }
 }
 
@@ -51,13 +39,7 @@ export const addImage = async (req, res) => {
             data: result
         })
     } catch (error) {
-        console.log("Error on upload Image :- " + error);
-
-        const statusCode = error.statusCode || 500
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || 'Internal server error'
-        })
+        next(error);
     }
 }
 
@@ -72,13 +54,7 @@ export const deleteImages = async (req, res) => {
             message: "Image delete successfully.",
         })
     } catch (error) {
-        console.log("Error on add Image :- " + error);
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || 'Internal server error'
-        })
+        next(error);
     }
 }
 
@@ -94,12 +70,6 @@ export const replaceImage = async (req, res) => {
             data: result
         })
     } catch (error) {
-        console.log("Error on replace Image :- " + error)
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || 'Internal server error'
-        })
+        next(error);
     }
 }

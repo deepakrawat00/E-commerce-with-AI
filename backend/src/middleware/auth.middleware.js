@@ -2,12 +2,17 @@ import jwt from 'jsonwebtoken';
 import config from '../config/env.config.js';
 import { checkId } from '../modules/users/admin/user.query.js';
 import { AppError } from '../utils/AppError.js';
+import { isTokenBlacklisted } from '../modules/users/blacklistToken.query.js';
 
 export const protectedRoute = async (req, res, next) => {
     try {
         const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
         if (!token) throw new AppError("Unauthorized access", 401);
+
+        const isBlacklisted = await isTokenBlacklisted(token);
+        console.log("Blacklisted", isBlacklisted)
+        if (isBlacklisted || isBlacklisted !== null) throw new AppError("Unauthorized access", 401);
 
         const decoded = jwt.verify(token, config.ACCESS_TOKEN_SECRET);
 

@@ -40,3 +40,17 @@ export const logoutQuery = async (token) => {
     );
     return row[0] || null;
 }
+
+export const profileQuery = async (id) => {
+    const [row] = await connectDB.execute(
+        `SELECT id, name, email, phone_no, image_id, is_suspend, is_verified FROM users WHERE id=?`,
+        [id]
+    );
+
+    const user = row[0];
+    return {
+        ...user,
+        is_suspend: user.is_suspend === 1,
+        is_verified: user.is_verified === 1
+    };
+}

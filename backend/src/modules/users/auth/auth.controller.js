@@ -1,10 +1,10 @@
-import { loginService, logoutService, registerService } from "./auth.service.js";
+import { loginService, logoutService, profileService, registerService } from "./auth.service.js";
 
 export const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        const { user, token } = await registerService(name, email, password);
+        const { user, token } = await registerService(name, email.toLowerCase(), password);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -20,13 +20,7 @@ export const register = async (req, res) => {
             token
         })
     } catch (error) {
-        console.log("Error on register ->", error);
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || "Internal server error"
-        })
+        next(error);
     }
 }
 
@@ -49,14 +43,7 @@ export const login = async (req, res) => {
             token
         })
     } catch (error) {
-        console.log("Error on login -> ", error);
-
-        const statusCode = error.statusCode || 500;
-
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || "Internal server error"
-        })
+        next(error);
     }
 }
 
@@ -74,13 +61,22 @@ export const logout = async (req, res, next) => {
             message: "Logout successfully"
         })
     } catch (error) {
-        console.log("Error on logout :- ", error);
+        next(error);
+    }
+}
 
-        const statusCode = error.statusCode || 500;
-
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || "Internal server error"
+export const profile = async (req, res, next) => {
+    try {
+        const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+        const { id } = req.user;
+        console.log("User -: ", id)
+        const result = await profileService(id);
+        res.status(200).json({
+            seccess: true,
+            message: "Profile fetch successfully",
+            data: result
         })
+    } catch (error) {
+        next(error);
     }
 }

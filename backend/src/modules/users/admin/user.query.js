@@ -26,7 +26,7 @@ export const createUser = async (name, email, password) => {
 
 export const checkId = async (id) => {
     const [result] = await connectDB.execute(
-        `SELECT id FROM users WHERE id=?`,
+        `SELECT id, role FROM users WHERE id=?`,
         [id]
     );
     return result[0]

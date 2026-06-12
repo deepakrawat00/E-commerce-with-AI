@@ -9,13 +9,7 @@ export const getUsers = async (req, res) => {
             data: result
         })
     } catch (error) {
-        console.log("Error on fetch user :- ", error);
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || "Internal server error"
-        })
+        next(error);
     }
 };
 
@@ -30,13 +24,7 @@ export const getUsersById = async (req, res) => {
             data: result
         })
     } catch (error) {
-        console.log("Error on fetch user :- ", error);
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || "Internal server error"
-        })
+        next(error);
     }
 };
 
@@ -52,13 +40,7 @@ export const addUsers = async (req, res) => {
             data: result
         })
     } catch (error) {
-        console.log("Error on add user :- ", error);
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || 'Internal server error'
-        })
+        next(error);
     }
 };
 
@@ -71,13 +53,7 @@ export const deleteUserById = async (req, res) => {
             message: "User delete successfully"
         })
     } catch (error) {
-        console.log("Error on deleting user", error)
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || "Internal server error"
-        })
+        next(error);
     }
 };
 
@@ -90,13 +66,7 @@ export const login = async (req, res) => {
             message: "Login successfully"
         })
     } catch (error) {
-        console.log("Error on login ", error)
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || "Internal server error"
-        })
+        next(error);
     }
 };
 
@@ -111,12 +81,6 @@ export const updateUserById = async (req, res) => {
             message: "User update successfully"
         })
     } catch (error) {
-        console.log("Error on updating user :-", error);
-
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message || "Internal server error"
-        })
+        next(error);
     }
 };

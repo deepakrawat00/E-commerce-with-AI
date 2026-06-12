@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import { AppError } from "../../../utils/AppError.js";
-import { checkEmail, loginQuery, registerQuery } from "./auth.query.js";
+import { checkEmail, loginQuery, profileQuery, registerQuery } from "./auth.query.js";
 import config from "../../../config/env.config.js";
 import { generateToken } from "../../../middleware/jwt.js";
-import { blackListToken, isTokenBlacklisted } from "../blacklistToken.query.js";
+import { blackListToken } from "../blacklistToken.query.js";
 
 export const registerService = async (name, email, password) => {
     const existingEmail = await checkEmail(email);
@@ -18,7 +18,6 @@ export const registerService = async (name, email, password) => {
 }
 
 export const loginService = async (email, password) => {
-    console.log("Email->", email)
     if (!email || !password) throw new AppError("Email and password are required", 400);
     const user = await loginQuery(email);
     if (!user || user === null) throw new AppError("Invalid email or password", 401)
@@ -30,9 +29,14 @@ export const loginService = async (email, password) => {
 
 export const logoutService = async (token) => {
     if (!token) throw new AppError("Unauthorized access", 401);
-    const isBlacklisted = await isTokenBlacklisted(token);
-    if (isBlacklisted) throw new AppError("Unauthorized access", 401);
     const add_token = await blackListToken(token);
     if (!add_token) throw new AppError("Unauthorized access", 401);
     return true;
+}
+
+export const profileService = async (id) => {
+    const user = await profileQuery(id);
+    if (!user) throw new AppError("Faild to fetch profile");
+
+    return user;
 }
