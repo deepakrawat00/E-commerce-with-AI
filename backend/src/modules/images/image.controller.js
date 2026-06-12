@@ -1,8 +1,9 @@
 import { deleteImageService, getImagesByIdService, getImageService, replaceImageService, uploadImageService } from './image.service.js';
 
-export const getAllImage = async (req, res) => {
+export const getAllImage = async (req, res, next) => {
     try {
-        const result = await getImageService();
+        const user_id = req.user.id;
+        const result = await getImageService(user_id);
         res.status(200).json({
             success: true,
             message: 'Images fetched successfully',
@@ -13,11 +14,11 @@ export const getAllImage = async (req, res) => {
     }
 }
 
-export const getImageByID = async (req, res) => {
+export const getImageByID = async (req, res, next) => {
     try {
         const { id } = req.params;
-        console.log("ID ", id)
-        const result = await getImagesByIdService(id);
+        const user_id = req.user.id;
+        const result = await getImagesByIdService(id, user_id);
 
         res.status(200).json({
             success: true,
@@ -29,10 +30,11 @@ export const getImageByID = async (req, res) => {
     }
 }
 
-export const addImage = async (req, res) => {
+export const addImage = async (req, res, next) => {
     try {
+        const user_id = req.user.id;
         const files = req.files;
-        const result = await uploadImageService(files);
+        const result = await uploadImageService(files, user_id);
         res.status(201).json({
             success: true,
             message: "Images uploaded successfully.",
@@ -43,11 +45,12 @@ export const addImage = async (req, res) => {
     }
 }
 
-export const deleteImages = async (req, res) => {
+export const deleteImages = async (req, res, next) => {
     try {
         const { id } = req.params;
+        const user_id = req.user.id;
 
-        const result = await deleteImageService(id);
+        const result = await deleteImageService(id, user_id);
 
         res.status(200).json({
             success: true,
@@ -58,11 +61,12 @@ export const deleteImages = async (req, res) => {
     }
 }
 
-export const replaceImage = async (req, res) => {
+export const replaceImage = async (req, res, next) => {
     try {
         const id = req.params.id;
         const file = req.file;
-        const result = await replaceImageService(id, file);
+        const user_id = req.user.id;
+        const result = await replaceImageService(id, file, user_id);
 
         res.status(200).json({
             success: true,

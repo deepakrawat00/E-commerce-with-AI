@@ -2,19 +2,6 @@ import connectDB from "../config/db.js";
 
 export const createTables = async () => {
     await connectDB.execute(`
-        CREATE TABLE IF NOT EXISTS images (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            public_id VARCHAR(255) NOT NULL,
-            url VARCHAR(500) NOT NULL,
-
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )
-    `);
-    console.log('Images table ready');
-
-    await connectDB.execute(`
         CREATE TABLE IF NOT EXISTS users (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
@@ -24,7 +11,8 @@ export const createTables = async () => {
             password VARCHAR(255) NULL,
 
             role ENUM('admin','user') DEFAULT 'user',
-            is_suspend BOOLEAN DEFAULT FALSE, 
+            is_suspend BOOLEAN DEFAULT FALSE,
+            
             image_id INT,
 
             auth_provider ENUM('local','google','facebook') DEFAULT 'local',
@@ -32,13 +20,30 @@ export const createTables = async () => {
             facebook_id VARCHAR(255) NULL UNIQUE,
             is_verified BOOLEAN DEFAULT FALSE,
 
-            FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE SET NULL,
-
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
     `);
     console.log('Users table ready');
+
+    await connectDB.execute(`
+        CREATE TABLE IF NOT EXISTS images (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            public_id VARCHAR(255) NOT NULL,
+            url VARCHAR(500) NOT NULL,
+
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+    `);
+    console.log('Images table ready');
+
+    await connectDB.execute(`ALTER TABLE users ADD CONSTRAINT user_profile FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE SET NULL`);
+    console.log("update Users table");
 
     await connectDB.execute(`
         CREATE TABLE IF NOT EXISTS addresses (

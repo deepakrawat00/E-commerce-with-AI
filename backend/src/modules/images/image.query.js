@@ -1,9 +1,9 @@
 import connectDB from "../../config/db.js";
 
-export const createImage = async (name, public_id, url) => {
+export const createImage = async (data) => {
     const [result] = await connectDB.execute(
-        `INSERT INTO images (name, public_id, url) VALUES (?,?,?)`,
-        [name, public_id, url]
+        `INSERT INTO images (user_id, name, public_id, url) VALUES (?,?,?,?)`,
+        [data.user_id, data.name, data.public_id, data.secure_url]
     );
     const [rows] = await connectDB.execute(
         `SELECT * FROM images WHERE id = ?`,
@@ -12,35 +12,35 @@ export const createImage = async (name, public_id, url) => {
     return rows[0];
 }
 
-export const getImages = async () => {
+export const getImages = async (user_id) => {
     const [rows] = await connectDB.execute(
-        `SELECT * FROM images`,
+        `SELECT * FROM images WHERE user_id=?`,
+        [user_id]
     )
     return rows;
 }
 
-export const getImageUsingID = async (id) => {
+export const getImageUsingID = async (id, user_id) => {
     const [rows] = await connectDB.execute(
-        `SELECT * FROM images WHERE id = ?`,
-        [id]
+        `SELECT * FROM images WHERE id = ? AND user_id=?`,
+        [id, user_id]
     );
     return rows[0];
 }
 
-export const deleteImage = async (id) => {
+export const deleteImage = async (id, user_id) => {
     const [result] = await connectDB.execute(
-        `DELETE FROM images WHERE id = ?`,
-        [id]
+        `DELETE FROM images WHERE id = ? AND user_id=?`,
+        [id, user_id]
     );
     return result.affectedRows > 0;
 }
 
-export const replaceImages = async (id, name, public_id, url) => {
-    const updated_at = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Kolkata' }).replace('T', ' ');
+export const replaceImages = async (id, name, public_id, url, user_id) => {
 
     const [result] = await connectDB.execute(
-        `UPDATE images SET name=?, public_id=?, url=?, updated_at=? WHERE id = ?`,
-        [name, public_id, url, updated_at, id]
+        `UPDATE images SET name=?, public_id=?, url=? WHERE id = ? AND user_id=?`,
+        [name, public_id, url, id, user_id]
     )
 
     const [row] = await connectDB.execute(

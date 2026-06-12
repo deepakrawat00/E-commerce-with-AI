@@ -1,4 +1,4 @@
-import { loginService, logoutService, profileService, registerService } from "./auth.service.js";
+import { loginService, logoutService, profileService, registerService, updateProfileService } from "./auth.service.js";
 
 export const register = async (req, res) => {
     try {
@@ -67,9 +67,7 @@ export const logout = async (req, res, next) => {
 
 export const profile = async (req, res, next) => {
     try {
-        const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
         const { id } = req.user;
-        console.log("User -: ", id)
         const result = await profileService(id);
         res.status(200).json({
             seccess: true,
@@ -78,5 +76,21 @@ export const profile = async (req, res, next) => {
         })
     } catch (error) {
         next(error);
+    }
+}
+
+export const updateProfile = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const user = req.body;
+
+        const result = await updateProfileService(id, user);
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully"
+        })
+    } catch (error) {
+        next(error)
     }
 }
