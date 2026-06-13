@@ -9,15 +9,15 @@ export const existingEmail = async (email) => {
 }
 
 export const createUser = async (name, email, password) => {
-    const [rows] = await connectDB.execute(
+    const [result] = await connectDB.execute(
         `INSERT INTO users (name,email,password) VALUES (?,?,?)`,
         [name, email, password]
     )
-    const [result] = await connectDB.execute(
+    const [row] = await connectDB.execute(
         `SELECT name,email,is_verified FROM users WHERE id = ?`,
-        [rows.insertId]
+        [result.insertId]
     )
-    const user = result[0]
+    const user = row[0]
     return {
         ...user,
         is_verified: user.is_verified === 1
@@ -25,11 +25,15 @@ export const createUser = async (name, email, password) => {
 }
 
 export const checkId = async (id) => {
-    const [result] = await connectDB.execute(
-        `SELECT id, role FROM users WHERE id=?`,
+    const [row] = await connectDB.execute(
+        `SELECT id, role,is_suspend FROM users WHERE id=?`,
         [id]
     );
-    return result[0]
+    const user = row[0];
+    return {
+        ...user,
+        is_suspend: user.is_suspend === 1
+    }
 }
 
 export const deleteUserQuery = async (id) => {
@@ -42,11 +46,11 @@ export const deleteUserQuery = async (id) => {
 }
 
 export const getAllUsersQuery = async () => {
-    const [result] = await connectDB.execute(
+    const [rows] = await connectDB.execute(
         `SELECT id, name, email, role, is_suspend, auth_provider, is_verified FROM users`
     );
 
-    return result.map(user => ({
+    return rows.map(user => ({
         ...user,
         is_suspend: user.is_suspend === 1,
         is_verified: user.is_verified === 1
@@ -54,11 +58,11 @@ export const getAllUsersQuery = async () => {
 }
 
 export const getuserbyIdQuery = async (id) => {
-    const [result] = await connectDB.execute(
+    const [rows] = await connectDB.execute(
         `SELECT id, name, email, role, is_suspend, auth_provider, is_verified FROM users WHERE id=?`,
         [id]
     )
-    const user = result[0];
+    const user = rows[0];
 
     return {
         ...user,

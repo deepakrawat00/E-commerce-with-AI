@@ -4,35 +4,40 @@ import config from '../../../config/env.config.js';
 import { AppError } from '../../../utils/AppError.js';
 import { checkId, createUser, deleteUserQuery, existingEmail, getAllUsersQuery, getuserbyIdQuery, updateByAdminQuery } from './user.query.js';
 
-export const getUserServices = async () => {
+export const getUserServices = async (user) => {
+    if (user.role !== "admin" || user.is_suspend === true) throw new AppError("Unauthorized access", 401);
     const users = await getAllUsersQuery();
     if (users.length === 0) throw new AppError('No users found', 404);
     return users;
 }
 
-export const getUserbyIdServices = async (id) => {
+export const getUserbyIdServices = async (id, user) => {
+    if (user.role !== "admin" || user.is_suspend === true) throw new AppError("Unauthorized access", 401);
     const existId = await checkId(id);
     if (!existId) throw new AppError("User not found", 404);
 
-    const user = await getuserbyIdQuery(id);
-    if (!user) throw new AppError("Failed to find user", 500);
+    const users = await getuserbyIdQuery(id);
+    if (!users) throw new AppError("Failed to find user", 500);
 
-    return user;
+    return users;
 }
 
-export const createUsers = async (name, email, password) => {
+export const createUsers = async (name, email, password, user) => {
+    if (user.role !== "admin" || user.is_suspend === true) throw new AppError("Unauthorized access", 401);
     const existEmail = await existingEmail(email);
     if (existEmail) throw new AppError('User already register', 409);
 
     const salt = bcrypt.genSaltSync(Number(config.SALT));
     const hashedPassword = await bcrypt.hashSync(password, salt);
 
-    const user = await createUser(name, email, hashedPassword);
-    if (!user) throw new AppError('Failed to create user', 500)
-    return user;
+    const users = await createUser(name, email, hashedPassword);
+    if (!users) throw new AppError('Failed to create user', 500)
+    return users;
 }
 
-export const deleteUsers = async (id) => {
+export const deleteUsers = async (id, user) => {
+    if (user.role !== "admin" || user.is_suspend === true) throw new AppError("Unauthorized access", 401);
+
     const existId = await checkId(id);
     if (!existId) throw new AppError('User not found', 404);
 
@@ -42,7 +47,9 @@ export const deleteUsers = async (id) => {
     return null;
 }
 
-export const updateUserServices = async (id, role, is_suspend) => {
+export const updateUserServices = async (id, role, is_suspend, user) => {
+    if (user.role !== "admin" || user.is_suspend === true) throw new AppError("Unauthorized access", 401);
+
     const existId = await checkId(id);
     if (!existId) throw new AppError('User not found', 404);
 

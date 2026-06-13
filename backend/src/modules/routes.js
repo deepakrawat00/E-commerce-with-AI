@@ -3,6 +3,7 @@ import imageRoutues from './images/image.routes.js';
 import config from '../config/env.config.js';
 import userRoutes from './users/admin/user.routes.js';
 import authRouter from './users/auth/auth.routes.js';
+import addressRoutes from './address/address.routes.js';
 
 const routes = Router();
 const api = '/api/' + config.API_VERSION;
@@ -18,6 +19,7 @@ routes.use(api + '/images', imageRoutues);
 // User rotes
 routes.use(api + '/admin/users', userRoutes);
 routes.use(api + '/auth', authRouter);
+routes.use(api + '/address', addressRoutes);
 
 routes.use((error, req, res, next) => {
     console.log(error)

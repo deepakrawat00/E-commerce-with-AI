@@ -2,7 +2,8 @@ import { createUsers, deleteUsers, getUserbyIdServices, getUserServices, updateU
 
 export const getUsers = async (req, res, next) => {
     try {
-        const result = await getUserServices();
+        const user = req.user;
+        const result = await getUserServices(user);
         res.status(200).json({
             success: true,
             message: "User fetched successfuly",
@@ -16,8 +17,8 @@ export const getUsers = async (req, res, next) => {
 export const getUsersById = async (req, res, next) => {
     try {
         const id = req.params.id;
-
-        const result = await getUserbyIdServices(id);
+        const user = req.user;
+        const result = await getUserbyIdServices(id, user);
         res.status(200).json({
             success: true,
             message: "User fetched successfuly",
@@ -31,8 +32,9 @@ export const getUsersById = async (req, res, next) => {
 export const addUsers = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
+        const user = req.user;
 
-        const result = await createUsers(name, email, password);
+        const result = await createUsers(name, email, password, user);
 
         res.status(201).json({
             success: true,
@@ -47,7 +49,9 @@ export const addUsers = async (req, res, next) => {
 export const deleteUserById = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const result = await deleteUsers(id);
+        const user = req.user;
+
+        const result = await deleteUsers(id, user);
         res.status(200).json({
             success: true,
             message: "User delete successfully"
@@ -57,24 +61,12 @@ export const deleteUserById = async (req, res, next) => {
     }
 };
 
-export const login = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-
-        res.status(200).json({
-            success: true,
-            message: "Login successfully"
-        })
-    } catch (error) {
-        next(error);
-    }
-};
-
 export const updateUserById = async (req, res, next) => {
     const id = req.params.id;
     const { role, is_suspend } = req.body;
+    const user = req.user;
     // const suspendValue = is_suspend === true ? 1 : 0;
-    const result = await updateUserServices(id, role, is_suspend);
+    const result = await updateUserServices(id, role, is_suspend, user);
     try {
         res.status(200).json({
             success: true,
