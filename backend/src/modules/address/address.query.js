@@ -92,6 +92,5 @@ export const deleteAddressQuery = async (id, user_id) => {
         `DELETE FROM addresses WHERE id=? AND user_id=?`,
         [id, user_id]
     );
-    console.log(result);
     return result.affectedRows > 0;
 }
