@@ -39,7 +39,6 @@ export const getColletionByIdQuery = async (id) => {
         [id]
     )
     const collection = rows[0];
-    console.log(collection)
     return {
         ...collection,
         status: collection.status === 1
@@ -86,13 +85,10 @@ export const updateCollectionQuery = async (id, title, description, image_id, me
         values.push(status)
     }
     values.push(id);
-    console.log("Fields -> ", fields);
-    console.log("VALUES -> ", values);
 
     const [result] = await connectDB.execute(
         `UPDATE collections SET ${fields.join(', ')} WHERE id=?`,
         values
     )
-    console.log("RESULT -> ", result)
     return result.affectedRows > 0;
 }
